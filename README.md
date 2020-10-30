@@ -1,4 +1,4 @@
-## Overview
+## Automated Call Centre
 
 Automated call centre built using Django and Twilio, accompanied by notes for future reference.
 
@@ -11,10 +11,11 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 
 ### Twilio Basics
 
-- twilio's infrastructure is on the internet but connects to carriers, bridging the internet and telephony networks
+- twilio's infrastructure is on the internet but connects to carriers, bridging the internet and telephony network
 - twilio acquires phone numbers from carriers around the world, and these numbers provide virtual presence on the telephony network
-- customers acquire twilio numbers according to use case, and these numbers can be configured
-- the majority of use cases involve text and voice messaging
+- customers acquire twilio numbers according to use case (text and voice messaging), and these numbers can be configured
+- twilio uses webhooks to let your application know that an event has occurred; for example, when there is an SMS or phone call, twilio will make an HTTP request (GET/POST) to the url configured for the webhook
+- the HTTP request will contain details of the event; the application will perform its logic then respond to twilio with instructions in the form of Twilio Markup Language (TwiML)
 
 ### Weather Application
 
@@ -23,3 +24,16 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 - the text message will reach the carrier which finds that twilio owns the recipient number, it will then be routed to twilio via the SMPP protocol
 - twilio receives the message through its dedicated connection with the carrier, it will find that the recipient phone number has been configured with messaging URL pointing to application endpoint
 - twilio will send HTTP request (webhook) to the weather app containing information in the text message
+- weather app will return TwiML instructing how to respond to the text message
+
+```
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Response>
+    <Message>It is very sunny!</Message>
+</Response>
+```
+
+- the TwiML is returned to twilio via HTTP which transforms it into SMS and sends it to the carrier via SMPP
+- nothing in the response telling twilio who to send to, instead response will be automatically directed to the number which sent the original message
+- application initiated events are triggered via calls to twilio's REST API which provides whole host of services
+- for example, weather app makes HTTP request to twilio API asking for text message containing weather forecast to be sent from application phone number to customer phone number
