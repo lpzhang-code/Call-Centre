@@ -23,7 +23,7 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 - carrier initiated event is where person texts the weather app with their location and receives forecast in response
 - the text message will reach the carrier which finds that twilio owns the recipient number, it will then be routed to twilio via the SMPP protocol
 - twilio receives the message through its dedicated connection with the carrier, it will find that the recipient phone number has been configured with messaging URL pointing to application endpoint
-- twilio will send HTTP request (webhook) to the weather app containing information in the text message
+- twilio will send HTTP request (webhook) to the weather app containing the information in the text message
 - weather app will return TwiML instructing how to respond to the text message
 
 ```
@@ -33,7 +33,17 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 </Response>
 ```
 
-- the TwiML is returned to twilio via HTTP which transforms it into SMS and sends it to the carrier via SMPP
-- nothing in the response telling twilio who to send to, instead response will be automatically directed to the number which sent the original message
+- the TwiML is returned to twilio via HTTP, it is transformed into SMS and sent to the carrier via SMPP
+- nothing in the response tells twilio who to send to, instead response will be automatically directed to the number which sent the original message
 - application initiated events are triggered via calls to twilio's REST API which provides whole host of services
 - for example, weather app makes HTTP request to twilio API asking for text message containing weather forecast to be sent from application phone number to customer phone number
+
+### REST API
+
+- API is a way of making data and functionality available to other programs across the internet, there are range of twilio APIs available allowing calls and messages to anyone in the world
+- REST API maps predefined set of URLs to resources which can be returned as HTML, JSON, images, etc; different kinds of HTTP requests (GET/POST/PUT/DELETE) can be made over the resource
+- there are separate REST APIs for each of twilio's products, but they are accessed in roughly the same way
+
+**Authentication**
+
+- to access twilio API, authenticate using HTTP or helper library
