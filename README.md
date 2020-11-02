@@ -44,6 +44,8 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 - REST API maps predefined set of URLs to resources which can be returned as HTML, JSON, images, etc; different kinds of HTTP requests (GET/POST/PUT/DELETE) can be made over the resource
 - there are separate REST APIs for each of twilio's products, but they are accessed in roughly the same way
 
-**Authentication**
+**First Example**
 
-- to access twilio API, authenticate using HTTP or helper library
+**Second Example**
+
+- interact with the twilio API from your python application using helper library
