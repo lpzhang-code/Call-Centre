@@ -67,14 +67,71 @@ pip install python-decouple
 from twilio.rest import Client
 from decouple import config
 
+# env vars
 account_sid = config("ACCOUNT_SID")
 auth_token = config("AUTH_TOKEN")
 
+# authentication
 client = Client(account_sid, auth_token)
 
+# send SMS
 message = client.messages.create(
     to="+61431795489", from_="+61488839562", body="Hello from Python!"
 )
 
 print(message.sid)
+```
+
+**Second Example**
+
+- now that we have sent the SMS, we can retrieve its details
+
+```
+message = client.messages.get('SM0fb22c4eb1ab45159f13e506f6bd1915')
+
+print(message.to)
+```
+
+- we can iterate through all of the SMS we have sent
+
+```
+for message in client.messages.list():
+    print(message.sid)
+```
+
+### Voice API
+
+- this allows us to programatically make, receive, and manage calls
+- create and activate virtual environment in our project folder
+
+```
+virtualenv .
+
+source bin/activate
+```
+
+- insert `Flask` and `twilio` into `requirements.txt` then install into the virtual environment
+
+```
+pip install -r requirements.txt
+```
+
+- create file named `answer_phone.py` and insert these lines
+
+```
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "Hello World!"
+
+if __name__ == "__main__":
+    app.run()
+```
+
+- run this simple flask application
+
+```
+python answer_phone.py
 ```
