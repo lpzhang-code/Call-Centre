@@ -46,6 +46,35 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 
 **First Example**
 
-**Second Example**
+- we are going to send SMS using our twilio account, which requires protecting sensitive information by storing them inside `.env` file and adding it to `.gitignore`
 
-- interact with the twilio API from your python application using helper library
+```
+ACCOUNT_SID=XXXXX
+AUTH_TOKEN=XXXXX
+```
+
+- then install the following packages
+
+```
+pip install twilio
+
+pip install python-decouple
+```
+
+- allowing us to run the script with env vars
+
+```
+from twilio.rest import Client
+from decouple import config
+
+account_sid = config("ACCOUNT_SID")
+auth_token = config("AUTH_TOKEN")
+
+client = Client(account_sid, auth_token)
+
+message = client.messages.create(
+    to="+61431795489", from_="+61488839562", body="Hello from Python!"
+)
+
+print(message.sid)
+```
