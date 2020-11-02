@@ -102,7 +102,7 @@ for message in client.messages.list():
 ### Voice API
 
 - this allows us to programatically make, receive, and manage calls
-- create and activate virtual environment in our project folder
+- make isolated python environment by creating and activating virtual environment in our project folder
 
 ```
 virtualenv .
@@ -135,3 +135,5 @@ if __name__ == "__main__":
 ```
 python answer_phone.py
 ```
+
+[allow Twilio to talk to your flask application]
