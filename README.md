@@ -130,10 +130,35 @@ if __name__ == "__main__":
     app.run()
 ```
 
-- run this simple flask application
+- run this lightweight flask application
 
 ```
 python answer_phone.py
+
+# Running on http://127.0.0.1:5000/
 ```
 
-[allow Twilio to talk to your flask application]
+- when twilio receives a phone call, it sends an HTTP request to your application seeking instructions on how to respond
+- however, by default our flask application on local dev is only available to other programs on the computer
+- make it accessible from the internet by using a tool called ngrok which ensures that requests to a public url end up hitting the flask app served on local dev
+
+```
+ngrok http 5000
+```
+
+- extend our flask app to answer phone calls
+
+```
+from twilio.twiml.voice_response import VoiceResponse
+
+@app.route("/answer", methods=['GET', 'POST'])
+def answer_call():
+    """Respond to incoming phone calls with a brief message."""
+    # Start our TwiML response
+    resp = VoiceResponse()
+
+    # Read a message aloud to the caller
+    resp.say("Thank you for calling! Have a great day.", voice='alice')
+
+    return str(resp)
+```
