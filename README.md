@@ -41,7 +41,7 @@ Automated call centre built using Django and Twilio, accompanied by notes for fu
 ### REST API
 
 - API is a way of making data and functionality available to other programs across the internet, there are range of twilio APIs available allowing calls and messages to anyone in the world
-- REST API maps predefined set of URLs to resources which can be returned as HTML, JSON, images, etc; different kinds of HTTP requests (GET/POST/PUT/DELETE) can be made over the resource
+- REST API maps predefined set of URLs to resources which can be returned as HTML, JSON, images, etc; different kinds of HTTP requests (i.e. GET or POST) can be made over the resource
 - there are separate REST APIs for each of twilio's products, but they are accessed in roughly the same way
 
 **First Example**
@@ -138,9 +138,8 @@ python answer_phone.py
 # Running on http://127.0.0.1:5000/
 ```
 
-- when twilio receives a phone call, it sends an HTTP request to your application seeking instructions on how to respond
-- however, by default our flask application on local dev is only available to other programs on the computer
-- make it accessible from the internet by using a tool called ngrok which ensures that requests to a public url end up hitting the flask app served on local dev
+- when twilio receives a phone call, it sends an HTTP request to your application seeking instructions on how to respond; however, by default the flask application running on local dev is only available to programs on the computer
+- make it accessible from the internet by using a tool called ngrok which ensures that HTTP requests to a public url end up hitting the flask app served on local dev
 
 ```
 ngrok http 5000
@@ -162,3 +161,5 @@ def answer_call():
 
     return str(resp)
 ```
+
+- now on the twilio console, configure the phone number so that incoming calls lead to HTTP request hitting the URL provided by ngrok
