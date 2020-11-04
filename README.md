@@ -163,3 +163,64 @@ def answer_call():
 ```
 
 - now on the twilio console, configure the phone number so that incoming calls lead to HTTP request hitting the URL provided by ngrok
+
+**Markup Language**
+
+- TwiML is an XML document with special twilio elements, we can use the helper library to create valid TwiML
+- there is the response element, and case sensitive verb and noun elements; verb elements must be nested inside the root response element
+- verb elements specify the actions to take for given call, they can be combined to create interactive user experiences
+
+```
+<Say>       # Read text
+
+<Play>      # Play audio
+
+<Dial>      # Add another party to the call
+
+<Record>    # Record caller's voice
+
+<Gather>    # Collect digits pressed on keypad
+
+<Hangup>    # End the call
+
+<Pause>     # Wait before executing more instructions
+
+<Redirect>  # Run different XML document
+
+<Reject>    # Decline incoming call
+```
+
+- the noun element is something that the verb element acts upon, such as a phone number
+- an HTTP request from twilio includes params/values which we can use to customise our response; the following are always sent with an HTTP request, either through the URL (GET), or hidden (POST)
+
+```
+CallSid     # Unique call identifier
+
+AccountSid  # Twilio account ID
+
+From        # Phone number
+
+To
+
+CallStatus
+```
+
+- twilio will also look up the geographic data (city, state, zip, country) of the phone numbers involved in the call, and send them as params in the HTTP request
+- the following TwiML reads 'Hello World' to the caller before playing an mp3 and hanging up
+
+```
+<Response>
+    <Say>Hello World!</Say>
+    <Play>https://api.twilio.com/cowbell.mp3</Play>
+</Response>
+```
+
+- we can also construct TwiML using our helper library where the call ends when the mp3 has looped ten times or the caller hangs up
+
+```
+resp = VoiceResponse()
+
+resp.say('Hello World')
+
+resp.play('https://api.twilio.com/cowbell.mp3', loop=10)
+```
