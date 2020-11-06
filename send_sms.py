@@ -1,15 +1,17 @@
-from twilio.rest import Client
-from decouple import config
+from flask import Flask
+from twilio.twiml.messaging_response import MessagingResponse
 
-# Your Account SID from twilio.com/console
-account_sid = config("ACCOUNT_SID")
-# Your Auth Token from twilio.com/console
-auth_token = config("AUTH_TOKEN")
+app = Flask(__name__)
 
-client = Client(account_sid, auth_token)
 
-message = client.messages.create(
-    to="+61431695399", from_="+61488839562", body="Hello from Python!"
-)
+@app.route("/answer", methods=["GET", "POST"])
+def answer_call():
+    """Respond to incoming SMS with our own SMS."""
+    response = MessagingResponse()
+    response.message("Sent this SMS.")
 
-print(message.sid)
+    return str(response)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

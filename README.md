@@ -1,6 +1,6 @@
 ## Automated Call Centre
 
-Automated call centre built using Django and Twilio, accompanied by notes for future reference.
+Automated call centre built using Python Flask and Twilio, accompanied by notes for future reference.
 
 ### Telephony Network
 
@@ -297,3 +297,5 @@ response.message('Read this first message.')
 
 response.message('Read this second message.')
 ```
+
+- note that `MessagingResponse` only works for responding to incoming SMS; if used for incoming phone call, this function and TwiML produced has no effect
