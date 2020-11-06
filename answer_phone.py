@@ -4,12 +4,12 @@ from twilio.twiml.voice_response import VoiceResponse, Gather
 app = Flask(__name__)
 
 
-@app.route("/answer", methods=["GET", "POST"])
+@app.route("/answer", methods=["POST"])
 def answer_call():
-    """Respond to incoming phone call."""
+    """Respond to phone call from user."""
     response = VoiceResponse()
 
-    # Deliver message and collect user's choice.
+    # Play message and record user's choice.
     gather = Gather(action="/collect", numDigits=1)
     gather.say(
         "Thank you for calling Anika Legal. \
@@ -21,23 +21,26 @@ def answer_call():
     )
     response.append(gather)
 
-    # End the call if they don't give any response.
+    # End the call if user doesn't respond.
     response.say(
-        "Sorry we haven't received a response. Goodbye.",
+        "Sorry, we haven't received a response, goodbye.",
         voice="alice",
         language="en-AU",
     )
     return str(response)
 
 
-@app.route("/collect", methods=["GET", "POST"])
+@app.route("/collect", methods=["POST"])
 def collect_info():
-    """Collect digit that user has pressed."""
+    """Retrieve information from user's call"""
     response = VoiceResponse()
 
-    if "Digits" in request.values:
-        choice = request.values["Digits"]
-        response.say("You have selected %s" % choice)
+    # Retrieve caller's number and choice
+    number = request.values["From"]
+    choice = request.values["Digits"]
+
+    # Send SMS depending on user's choice
+    response.message("You are calling from %s and have selected %s" % (number, choice))
 
     # response.redirect('/collect', method='POST')
     return str(response)

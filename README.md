@@ -227,7 +227,7 @@ resp.play('https://api.twilio.com/cowbell.mp3', loop=10)
 
 **Gather Verb**
 
-- use the `<Gather>` verb to collect digits or transcribe speech during the call; info entered by the user during set period will be sent to URL by POST request; if there is no info, twilio will move to next verb or end the call
+- use the `<Gather>` verb to collect digits or transcribe speech during the call; info entered by the user during set period will be sent to URL; if there is no info, twilio will move to next verb or end the call
 - attributes can be specified to configure the behaviour of the `<Gather>` verb
 
 ```
@@ -241,10 +241,10 @@ resp.play('https://api.twilio.com/cowbell.mp3', loop=10)
 
 - the `action` attribute takes an absolute or relative URL and when the caller has finished entering info or time has run out, an HTTP request is made to this URL with data
 - if we are gathering digits from the caller, twilio will include the `Digits` param containing numbers the caller entered
-- after `<Gather>` ends and HTTP request is made to `action` attribute URL, the current call will continue with TwiML returned by that URL, so any verb after `<Gather>` is ignored
-- however if user didn't input any information, the call flow continues in the original TwiML document, we could tell them that they haven't input anything and hang up
-- if no action attribute has been specified, twilio will make an HTTP request to the current URL and this can lead to looping behaviour, so it is recommended that the action attribute be a new URL
-- so generate the same TwiML as before, with the action attribute included
+- after `<Gather>` ends and HTTP request is made to `action` URL, the current call will continue with TwiML returned by that URL, so any verb after `<Gather>` is ignored
+- however if user didn't input any information, the call flow continues in the original TwiML document, we could say they haven't input anything and hang up
+- if no `action` attribute is specified, twilio will make an HTTP request to the current URL and this can lead to looping behaviour, so it is recommended that the `action` attribute be a new URL
+- so let's use the helper library to generate the same TwiML as before- with attributes
 
 ```
 from twilio.twiml.voice_response import Gather, VoiceResponse
@@ -253,19 +253,47 @@ response = VoiceResponse()
 
 gather = Gather(action='/process_gather.php', method='GET')
 
-gather.say('Please enter your account number,\nfollowed by the pound sign')
+gather.say('Please enter your account number.')
 
 response.append(gather)
 
-response.say('We didn\'t receive any input. Goodbye!')
+response.say('We didn't receive any input. Goodbye!')
 
 print(response)
 ```
 
-- the `finishOnKey` attribute allows the user to press a value (#) to submit their digits
+- the `finishOnKey` attribute allows the user to press a value (#) to immediately submit their digits
 - the `input` attribute is `dtmf` by default, however we can specify `speech` or `dtmf speech` (where the first detected input takes precedence)
 - the `method` attribute is `POST` by default, however we can specify that `GET` request is made to the `action` URL
 - the `numDigits` attribute specifies the number of digits expected from the caller, once the final digit is pressed, an HTTP request is immediately made to the `action` URL
 - the `timeout` attribute is the number of seconds (default five) that twilio will wait for the user to press another key or say another word before submitting their data
-- the `actionOnEmptyResult` attribute forces `<Gather>` to send HTTP request to `action` URL even when there is no input
+- the `actionOnEmptyResult` attribute force sends HTTP request to `action` URL even when there is no input
 - we can nest `<Say>, <Play>, <Pause>` verbs inside of `<Gather>` element
+
+### SMS API
+
+- use helper library to send simple SMS response
+
+```
+from twilio.twiml.messaging_response import MessagingResponse, Message
+
+response = MessagingResponse()
+
+message = Message()
+
+message.body('Hello World!')
+
+response.append(message)
+```
+
+- use helper library to send two SMS
+
+```
+from twilio.twiml.messaging_response import MessagingResponse
+
+response = MessagingResponse()
+
+response.message('Read this first message.')
+
+response.message('Read this second message.')
+```
