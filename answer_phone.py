@@ -1,5 +1,7 @@
 from flask import Flask, request
+from decouple import config
 from twilio.twiml.voice_response import VoiceResponse, Gather
+from twilio.rest import Client
 
 app = Flask(__name__)
 
@@ -35,14 +37,33 @@ def collect_info():
     """Retrieve information from user's call"""
     response = VoiceResponse()
 
-    # Retrieve caller's number and choice
+    # Retrieve caller's number and choice.
     number = request.values["From"]
     choice = request.values["Digits"]
 
-    # Send SMS depending on user's choice
-    response.message("You are calling from %s and have selected %s" % (number, choice))
+    # Authenticate to send SMS
+    account_sid = config("ACCOUNT_SID")
+    auth_token = config("AUTH_TOKEN")
+    client = Client(account_sid, auth_token)
 
-    # response.redirect('/collect', method='POST')
+    # Generate response depending on user choice.
+    if choice == "1":
+        message = "Thank you for enquiring about repairing your rental property, please fill in the form at this link: https://test-intake.anikalegal.com/"
+    elif choice == "2":
+        message = "Thank you for enquiring about reducing your rent, please fill in the form at this link: https://test-intake.anikalegal.com/"
+    elif choice == "3":
+        message = "Thank you for contacting us about your specific enquiry, one of our staff will call back in the next few days."
+    else:
+        response.say(
+            "Sorry we haven't received a valid choice, please try again.",
+            voice="alice",
+            language="en-AU",
+        )
+        response.redirect("/answer", method="POST")
+        return str(response)
+
+    # for choices 1 - 3 send SMS then finish
+    send = client.messages.create(to=number, from_="+61488839562", body=message)
     return str(response)
 
 
